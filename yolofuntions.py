@@ -238,9 +238,8 @@ def detect_table(weights= "/Users/olivergiesecke/opt/anaconda3/envs/yolo/lib/pyt
 
                 # Write results
                 for *xyxy, conf, cls in reversed(det):
-                    xywh = (xyxy2xywh(torch.tensor(xyxy).view(1, 4)) / gn).view(-1).tolist()  # normalized xywh
-                    line = (cls, *xywh, conf) if save_conf else (cls, *xywh)  # label format
-                    allresults.append({"class":line[0].numpy(), "xzwh":line[1:]} )
+                    line = (cls, torch.tensor(xyxy).view(1, 4).view(-1).tolist(), conf) if save_conf else (cls, torch.tensor(xyxy).view(1, 4).view(-1).tolist())  # label format
+                    allresults.append({"class":int(line[0].numpy()), "xzwh":line[1]} )
                     
                     if save_txt:  # Write to file
                         xywh = (xyxy2xywh(torch.tensor(xyxy).view(1, 4)) / gn).view(-1).tolist()  # normalized xywh
@@ -358,15 +357,6 @@ class parameters:
         self.project = "/Users/olivergiesecke/Downloads/"
         self.save_txt = True
         
-root = "/Users/olivergiesecke/opt/anaconda3/envs/yolo/lib/python3.8/site-packages/yolov5/"
-path = "/Users/olivergiesecke/Dropbox/ResearchData/CAFR_states/rawcleaned/"
-img = pdf_page2img(f"{path}/la_state_of_louisiana_2004.pdf", 34, preprocess = True, save_image=False, show_preprocessing = True) 
-    
-image_path = "/Users/olivergiesecke/Downloads/aux.jpeg"
-weight_path = "/Users/olivergiesecke/opt/anaconda3/envs/yolo/lib/python3.8/site-packages/yolov5/runs/train/exp4/weights/best.pt"
-params_obj = parameters(weight_path, img_size = [640])
-pred = detect_table(source = image_path, **vars(params_obj))
-# provides a list of dictionary with class and the correspoding coordinates
 
 
 
